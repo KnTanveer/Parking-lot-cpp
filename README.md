@@ -1,4 +1,4 @@
-## How to run the game?
+## How to run the program?
 
 ```bash
 git clone "https://github.com/KnTanveer/parking-lot-cpp.git"
