@@ -2,7 +2,7 @@
 
 ```bash
 git clone "https://github.com/KnTanveer/Parking-lot-cpp.git"
-cd parking-lot-cpp
+cd Parking-lot-cpp
 g++ main.cpp -o parking-lot 
 ./parking-lot
 ```
