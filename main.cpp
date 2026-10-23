@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -49,13 +48,13 @@ void initializeSlots() {
 void saveData() {
     ofstream file("parking.txt");
 
-    for (const auto& slot : slots) {
-        file << slot.id << '\n';
-        file << slot.vehicleNumber << '\n';
-        file << slot.entryTime << '\n';
-        file << slot.expiryTime << '\n';
-        file << slot.fee << '\n';
-        file << slot.occupied << '\n';
+    for (int i = 0; i < TOTAL_SLOTS; i++) {
+        file << slots[i].id << '\n';
+        file << slots[i].vehicleNumber << '\n';
+        file << slots[i].entryTime << '\n';
+        file << slots[i].expiryTime << '\n';
+        file << slots[i].fee << '\n';
+        file << slots[i].occupied << '\n';
     }
 
     file.close();
@@ -130,16 +129,16 @@ void displaySlots() {
 
     cout << "\n========== PARKING SLOTS ==========\n";
 
-    for (const auto& slot : slots) {
-        cout << "Slot " << slot.id << " : ";
+    for (int i = 0; i < TOTAL_SLOTS; i++) {
+        cout << "Slot " << slots[i].id << " : ";
 
-        if (slot.occupied) {
-            time_t remaining = slot.expiryTime - time(nullptr);
+        if (slots[i].occupied) {
+            time_t remaining = slots[i].expiryTime - time(nullptr);
 
             cout << "OCCUPIED"
-                << " | Vehicle: " << slot.vehicleNumber
+                << " | Vehicle: " << slots[i].vehicleNumber
                 << " | Fee: Rs. " << fixed
-                << setprecision(2) << slot.fee
+                << setprecision(2) << slots[i].fee
                 << " | Remaining: "
                 << remaining / 60 << " min\n";
         } else {
@@ -188,12 +187,16 @@ void parkVehicle() {
     cout << "Enter vehicle registration number: ";
     cin >> vehicle;
 
-    for (char& ch : vehicle)
-        ch = toupper(static_cast<unsigned char>(ch));
+    // Convert vehicle number to uppercase
+    for (int i = 0; i < vehicle.length(); i++) {
+        vehicle[i] = toupper(static_cast<unsigned char>(vehicle[i]));
+    }
 
-    for (const auto& existing : slots) {
-        if (existing.occupied &&
-            existing.vehicleNumber == vehicle) {
+    // Check if vehicle is already parked
+    for (int i = 0; i < TOTAL_SLOTS; i++) {
+        if (slots[i].occupied &&
+            slots[i].vehicleNumber == vehicle) {
+
             cout << "This vehicle is already parked.\n";
             pauseScreen();
             return;
@@ -232,8 +235,11 @@ void parkVehicle() {
     cout << "Slot: " << slot.id << '\n';
     cout << "Vehicle: " << slot.vehicleNumber << '\n';
     cout << "Duration: " << duration << " hours\n";
-    cout << "Parking fee: Rs. " << fixed << setprecision(2) << slot.fee << '\n';
-    cout << "Expiry time: " << put_time(localtime(&slot.expiryTime), "%d-%m-%Y %I:%M %p") << '\n';
+    cout << "Parking fee: Rs. " << fixed
+            << setprecision(2) << slot.fee << '\n';
+
+    cout << "Expiry time: "
+            << put_time(localtime(&slot.expiryTime),"%d-%m-%Y %I:%M %p") << '\n';
 
     pauseScreen();
 }
@@ -242,7 +248,8 @@ void viewRevenue() {
     clearScreen();
 
     cout << "\n========== REVENUE ==========\n";
-    cout << "Total collected: Rs. " << fixed << setprecision(2) << revenue << '\n';
+    cout << "Total collected: Rs. "
+            << fixed << setprecision(2) << revenue << '\n';
     cout << "=============================\n";
 
     pauseScreen();
@@ -279,7 +286,8 @@ void removeVehicle() {
         return;
     }
 
-    cout << "Vehicle " << slot.vehicleNumber << " removed from slot " << slot.id << ".\n";
+    cout << "Vehicle " << slot.vehicleNumber
+            << " removed from slot " << slot.id << ".\n";
 
     slot.vehicleNumber = "";
     slot.entryTime = 0;
